@@ -1,0 +1,31 @@
+name: Make TWRP Device
+
+on:
+  workflow_dispatch:
+    inputs:
+      IMG_URL:    
+        description: 'IMG_URL'
+        required: true
+        default: ''
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: make
+      run: |
+        sudo apt update
+        sudo apt -y install cpio
+        pip3 install twrpdtgen
+        mkdir dt
+        aria2c "${{ github.event.inputs.IMG_URL }}"
+        python3 -m twrpdtgen -o dt/ *.img
+        cd dt/*/*
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git init
+        git checkout -b device
+        git add .
+        git commit -m "Initial TWRP device tree"
+        git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
+        git push -f -u origin device

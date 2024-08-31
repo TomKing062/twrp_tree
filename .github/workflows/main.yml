@@ -18,7 +18,7 @@ jobs:
         sudo apt -y install cpio
         pip3 install twrpdtgen
         mkdir dt
-        aria2c "${{ github.event.inputs.IMG_URL }}"
+        curl -o boot.img -L "${{ github.event.inputs.IMG_URL }}"
         python3 -m twrpdtgen -o dt/ *.img
         cd dt/*/*
         git config --global user.name "github-actions[bot]"

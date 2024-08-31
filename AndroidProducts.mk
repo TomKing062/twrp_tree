@@ -9,6 +9,4 @@ PRODUCT_MAKEFILES := \
     $(LOCAL_DIR)/omni_S701.mk
 
 COMMON_LUNCH_CHOICES := \
-    omni_S701-user \
-    omni_S701-userdebug \
     omni_S701-eng

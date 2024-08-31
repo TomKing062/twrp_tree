@@ -24,15 +24,15 @@
 /gnssmodem           emmc     /dev/block/platform/soc/soc:ap-apb/71400000.sdio/by-name/gnssmodem        flags=display=gnssmodem
 /pmsys               emmc     /dev/block/platform/soc/soc:ap-apb/71400000.sdio/by-name/pm_sys           flags=display=pmsys
 /misc                emmc     /dev/block/platform/soc/soc:ap-apb/71400000.sdio/by-name/misc             flags=display=misc
-/boot                emmc     /dev/block/platform/soc/soc:ap-apb/71400000.sdio/by-name/boot             flags=display=boot
-/recovery            emmc     /dev/block/platform/soc/soc:ap-apb/71400000.sdio/by-name/recovery         flags=display=recovery
-/persist             emmc     /dev/block/platform/soc/soc:ap-apb/71400000.sdio/by-name/persist          flags=display=persist
+/boot                emmc     /dev/block/platform/soc/soc:ap-apb/71400000.sdio/by-name/boot             flags=display="Boot Image";flashimg=1;backup=1
+/recovery            emmc     /dev/block/platform/soc/soc:ap-apb/71400000.sdio/by-name/recovery         flags=display="Recovery Image";flashimg=1;backup=1
+/persist             emmc     /dev/block/platform/soc/soc:ap-apb/71400000.sdio/by-name/persist          flags=display=frp
 /logo                emmc     /dev/block/platform/soc/soc:ap-apb/71400000.sdio/by-name/logo             flags=display=logo
 /fbootlogo           emmc     /dev/block/platform/soc/soc:ap-apb/71400000.sdio/by-name/fbootlogo        flags=display=fbootlogo
-/                    ext4     /dev/block/platform/soc/soc:ap-apb/71400000.sdio/by-name/system           flags=display=
-/vendor              ext4     /dev/block/platform/soc/soc:ap-apb/71400000.sdio/by-name/vendor           flags=display=vendor
-/product             ext4     /dev/block/platform/soc/soc:ap-apb/71400000.sdio/by-name/product          flags=display=product
-/data                ext4     /dev/block/platform/soc/soc:ap-apb/71400000.sdio/by-name/userdata         flags=display=data
-/cache               ext4     /dev/block/platform/soc/soc:ap-apb/71400000.sdio/by-name/cache            flags=display=cache
-/mnt/vendor          ext4     /dev/block/platform/soc/soc:ap-apb/71400000.sdio/by-name/prodnv           flags=display=vendor
-/storage/sdcard0     vfat     /dev/block/platform/soc/soc:ap-apb/71100000.sdio/mmcblk1p1                flags=display=sdcard0
+/system              ext4     /dev/block/platform/soc/soc:ap-apb/71400000.sdio/by-name/system           flags=display=System
+/vendor              ext4     /dev/block/platform/soc/soc:ap-apb/71400000.sdio/by-name/vendor           flags=display=Vendor
+/product             ext4     /dev/block/platform/soc/soc:ap-apb/71400000.sdio/by-name/product          flags=display=Product
+/data                ext4     /dev/block/platform/soc/soc:ap-apb/71400000.sdio/by-name/userdata         flags=display=Data
+/cache               ext4     /dev/block/platform/soc/soc:ap-apb/71400000.sdio/by-name/cache            flags=display=Cache;backup=0
+/prodnv              ext4     /dev/block/platform/soc/soc:ap-apb/71400000.sdio/by-name/prodnv           flags=display=Prodnv;backup=1
+/external_sd         vfat     /dev/block/mmcblk1p1                 flags=display="external_sd"

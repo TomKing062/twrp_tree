@@ -5,5 +5,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-PRODUCT_MAKEFILES := \
-    $(LOCAL_DIR)/omni_S701.mk
+patch -Np1 < device/philips/S701/check_radio_versions.py.patch
+patch -Np1 < device/philips/S701/post_process_props.py.patch
+
+add_lunch_combo omni_S701-eng

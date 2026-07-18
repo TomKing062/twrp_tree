@@ -119,7 +119,7 @@ TARGET_COPY_OUT_VENDOR_DLKM := vendor_dlkm
 
 BOARD_SUPER_PARTITION_SIZE := 15325986816
 BOARD_SUPER_PARTITION_GROUPS := group_unisoc
-BOARD_GROUP_UNISOC_PARTITION_LIST := system system_ext system_dlkm vendor odm product vendor_dlkm
+BOARD_GROUP_UNISOC_PARTITION_LIST := system system_ext vendor odm product vendor_dlkm
 BOARD_GROUP_UNISOC_SIZE := 15309209600
 BOARD_BUILD_SUPER_IMAGE_BY_DEFAULT := false
 
@@ -135,7 +135,6 @@ AB_OTA_PARTITIONS += \
     vbmeta_odm \
     system \
     system_ext \
-    system_dlkm \
     vendor \
     odm \
     product \

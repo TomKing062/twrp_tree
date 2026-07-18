@@ -1,0 +1,7 @@
+# Additional TWRP flags for image flashing / backup.
+
+/boot                 emmc    /dev/block/by-name/boot          flags=slotselect;backup=1;flashimg=1;display="Boot"
+/vendor_boot          emmc    /dev/block/by-name/vendor_boot   flags=slotselect;backup=1;flashimg=1;display="Vendor Boot"
+/dtbo                 emmc    /dev/block/by-name/dtbo          flags=slotselect;backup=1;flashimg=1;display="DTBO"
+/vbmeta               emmc    /dev/block/by-name/vbmeta        flags=slotselect;backup=1;flashimg=1;display="VBMeta"
+/super                emmc    /dev/block/by-name/super         flags=display="Super"

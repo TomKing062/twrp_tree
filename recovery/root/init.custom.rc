@@ -1,0 +1,53 @@
+on init
+    export TERM xterm-256color
+    export TERMINFO /system_ext/etc/terminfo
+    export TERMINFO_DIRS /system_ext/etc/terminfo
+    exec u:r:recovery:s0 root root -- /system/bin/sh /stock_props.sh
+    start insmod_sh
+
+on late-init
+    exec u:r:recovery:s0 root root -- /system/bin/sh /stock_props.sh
+    mkdir /tmp/misc 0700 root root
+    mkdir /tmp/misc/keystore 0700 root root
+    start health-hal-2-0
+    start keymint_trusty
+    start gatekeeper_trusty
+
+on boot
+    start clear_bcb
+
+service keymint_trusty /vendor/bin/hw/android.hardware.security.keymint@2.0-unisoc.service.trusty
+    class early_hal
+    user root
+    group root system drmrpc
+    seclabel u:r:recovery:s0
+    setenv LD_LIBRARY_PATH /vendor/lib64:/system/lib64:/vendor/lib64/hw
+    interface aidl android.hardware.security.keymint.IKeyMintDevice/default
+    interface aidl android.hardware.security.secureclock.ISecureClock/default
+    interface aidl android.hardware.security.sharedsecret.ISharedSecret/default
+    interface aidl android.hardware.security.keymint.IRemotelyProvisionedComponent/default
+    disabled
+
+service gatekeeper_trusty /vendor/bin/hw/android.hardware.gatekeeper@1.0-service.trusty
+    class hal
+    user root
+    group root system
+    seclabel u:r:recovery:s0
+    setenv LD_LIBRARY_PATH /vendor/lib64:/system/lib64:/vendor/lib64/hw
+    interface android.hardware.gatekeeper@1.0::IGatekeeper default
+    disabled
+
+service insmod_sh /vendor/bin/init.insmod.sh /vendor/etc/init.insmod.cfg
+    class main
+    user root
+    group root system
+    disabled
+    oneshot
+
+service clear_bcb /system/bin/sh /clear_recovery_bcb.sh
+    class main
+    user root
+    group root system
+    seclabel u:r:recovery:s0
+    disabled
+    oneshot

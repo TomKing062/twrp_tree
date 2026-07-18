@@ -1,0 +1,9 @@
+# USB/ADB defaults matched to the known-working P780F01 TWRP build.
+ro.sys.usb.bicr=no
+ro.sys.usb.storage.type=adb,mtp
+persist.service.adb.enable=1
+persist.service.debuggable=1
+persist.sys.usb.config=mtp,adb
+persist.sys.support.typeC=true
+persist.sys.usb.menu=miFavor
+sys.usb.controller=musb-hdrc.0.auto

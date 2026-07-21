@@ -1,3 +1,3 @@
 import /init.recovery.common.rc
-import /init.recovery.usbfix.rc
+import /init.recovery.usb.rc
 import /init.custom.rc

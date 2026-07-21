@@ -1,0 +1,51 @@
+cc_library_shared {
+    name: "vendor.sprd.hardware.boot@1.2-impl",
+    defaults: [
+        "hidl_defaults",
+        "libboot_control_defaults",
+    ],
+    relative_install_path: "hw",
+    vendor: true,
+    recovery_available: true,
+    srcs: ["BootControl.cpp"],
+
+    shared_libs: [
+        "liblog",
+        "libhardware",
+        "libhidlbase",
+        "libutils",
+        "vendor.sprd.hardware.boot@1.2",
+        "android.hardware.boot@1.0",
+        "bootctrl.ums9632",
+        "libgptutils",
+        "libz",
+        "libcutils",
+    ],
+    static_libs: [
+        "libboot_control",
+        "libfstab",
+    ],
+}
+
+cc_binary {
+    name: "vendor.sprd.hardware.boot@1.2-service",
+    defaults: ["hidl_defaults"],
+    relative_install_path: "hw",
+    vendor: true,
+    init_rc: ["vendor.sprd.hardware.boot@1.2-service.rc"],
+    srcs: ["service.cpp"],
+
+    shared_libs: [
+        "liblog",
+        "libhardware",
+        "libhidlbase",
+        "libutils",
+        "vendor.sprd.hardware.boot@1.2",
+        "android.hardware.boot@1.0",
+        "bootctrl.ums9632",
+        "libgptutils",
+        "libz",
+        "libcutils",
+    ],
+
+}

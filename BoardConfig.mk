@@ -1,15 +1,18 @@
-# Copyright (C) 2026 The TWRP Open Source Project
+# Copyright (C) 2024 The TWRP Open Source Project
 #
-# SPDX-License-Identifier: Apache-2.0
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 DEVICE_PATH := device/nubia/P780F01
-
-# For building with a minimal TWRP manifest.
-ALLOW_MISSING_DEPENDENCIES := true
-BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
-
-# Assert
-TARGET_OTA_ASSERT_DEVICE := P780F01,ums9632_1h10,ums9632_1h10_native,Z2464N
 
 # Architecture
 TARGET_ARCH := arm64
@@ -17,14 +20,12 @@ TARGET_ARCH_VARIANT := armv8-a
 TARGET_CPU_ABI := arm64-v8a
 TARGET_CPU_ABI2 :=
 TARGET_CPU_VARIANT := generic
-TARGET_CPU_VARIANT_RUNTIME := cortex-a78
 
 TARGET_2ND_ARCH := arm
 TARGET_2ND_ARCH_VARIANT := armv7-a-neon
 TARGET_2ND_CPU_ABI := armeabi-v7a
 TARGET_2ND_CPU_ABI2 := armeabi
 TARGET_2ND_CPU_VARIANT := generic
-TARGET_2ND_CPU_VARIANT_RUNTIME := cortex-a55
 
 # 64-Bit
 TARGET_IS_64_BIT := true
@@ -45,6 +46,12 @@ BUILD_BROKEN_DUP_RULES := true
 BOARD_USES_VENDOR_BOOT := true
 BOARD_BOOT_HEADER_VERSION := 4
 TW_LOAD_VENDOR_BOOT_MODULES := true
+BOARD_MOVE_RECOVERY_RESOURCES_TO_VENDOR_BOOT := true
+BOARD_INCLUDE_RECOVERY_RAMDISK_IN_VENDOR_BOOT := true
+BOARD_RAMDISK_USE_LZ4 := true
+
+# Assert
+TARGET_OTA_ASSERT_DEVICE := P780F01,P780F02,ums9632_1h10,ums9632_1h10_native,Z2464N
 
 # APEX
 OVERRIDE_TARGET_FLATTEN_APEX := true
@@ -52,15 +59,17 @@ OVERRIDE_TARGET_FLATTEN_APEX := true
 # Bootloader
 TARGET_BOOTLOADER_BOARD_NAME := ums9632_1h10
 TARGET_NO_BOOTLOADER := true
+TARGET_USES_UEFI := true
+
+# Platform
+BOARD_USES_SPRD_HARDWARE := true
+TARGET_BOARD_PLATFORM := ums9632
+TARGET_BOARD_PLATFORM_GPU := mali-g57
 
 # Display
 TARGET_SCREEN_DENSITY := 320
 TARGET_SCREEN_WIDTH := 900
 TARGET_SCREEN_HEIGHT := 2030
-
-# Platform
-BOARD_USES_SPRD_HARDWARE := true
-TARGET_BOARD_PLATFORM := ums9632
 
 # Vendor boot image
 TARGET_NO_KERNEL := true
@@ -77,7 +86,7 @@ BOARD_RAMDISK_OFFSET := 0x05400000
 BOARD_KERNEL_TAGS_OFFSET := 0x00000100
 BOARD_DTB_OFFSET := 0x01f00000
 
-BOARD_VENDOR_CMDLINE := console=ttyS1,115200n8 buildvariant=user
+BOARD_VENDOR_CMDLINE := console=ttyS1,115200n8 androidboot.selinux=permissive
 
 BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOT_HEADER_VERSION)
 BOARD_MKBOOTIMG_ARGS += --kernel_offset $(BOARD_KERNEL_OFFSET)
@@ -87,116 +96,123 @@ BOARD_MKBOOTIMG_ARGS += --dtb_offset $(BOARD_DTB_OFFSET)
 BOARD_MKBOOTIMG_ARGS += --dtb $(TARGET_PREBUILT_DTB)
 BOARD_MKBOOTIMG_ARGS += --vendor_cmdline "$(BOARD_VENDOR_CMDLINE)"
 
-BOARD_RAMDISK_USE_LZ4 := true
-BOARD_VENDOR_RAMDISK_USE_LZ4 := true
+# AVB
+BOARD_AVB_ENABLE := true
+BOARD_AVB_MAKE_VBMETA_IMAGE_ARGS += --flags 3
+BOARD_AVB_VBMETA_SYSTEM := system
+BOARD_AVB_BOOT_KEY_PATH := $(DEVICE_PATH)/security/rsa4096_boot.pem
+BOARD_AVB_BOOT_ALGORITHM := SHA256_RSA4096
+BOARD_AVB_BOOT_ROLLBACK_INDEX := 0
+BOARD_AVB_BOOT_ROLLBACK_INDEX_LOCATION := 2
 
-# P780F01 recovery lives in vendor_boot.
-TARGET_NO_RECOVERY := true
-BOARD_INCLUDE_RECOVERY_RAMDISK_IN_VENDOR_BOOT := true
-BOARD_MOVE_RECOVERY_RESOURCES_TO_VENDOR_BOOT := true
+# A/B
+AB_OTA_UPDATER := true
+AB_OTA_PARTITIONS += \
+    boot \
+    dtbo \
+    init_boot \
+    vendor_boot \
+    vbmeta \
+    vbmeta_odm \
+    vbmeta_product \
+    vbmeta_system \
+    vbmeta_system_ext \
+    vbmeta_vendor \
 
 # Partitions
-BOARD_FLASH_BLOCK_SIZE := 262144 # (BOARD_KERNEL_PAGESIZE * 64)
+BOARD_FLASH_BLOCK_SIZE := 262144  # (BOARD_KERNEL_PAGESIZE * 64)
 BOARD_BOOTIMAGE_PARTITION_SIZE := 67108864
 BOARD_VENDOR_BOOTIMAGE_PARTITION_SIZE := 104857600
 BOARD_HAS_LARGE_FILESYSTEM := true
-
-BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE := erofs
-BOARD_SYSTEM_EXTIMAGE_FILE_SYSTEM_TYPE := erofs
-BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := erofs
-BOARD_ODMIMAGE_FILE_SYSTEM_TYPE := erofs
-BOARD_PRODUCTIMAGE_FILE_SYSTEM_TYPE := erofs
-BOARD_VENDOR_DLKMIMAGE_FILE_SYSTEM_TYPE := erofs
-BOARD_USERDATAIMAGE_FILE_SYSTEM_TYPE := f2fs
+BOARD_SUPPRESS_SECURE_ERASE := true
+#BOARD_ROOT_EXTRA_FOLDERS := cache socko my_preload
+BOARD_USES_METADATA_PARTITION := true
 TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := true
 TARGET_USERIMAGES_USE_EROFS := true
+
+# Filesystem types
+BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE := erofs
+BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := erofs
+BOARD_PRODUCTIMAGE_FILE_SYSTEM_TYPE := erofs
+BOARD_SYSTEM_EXTIMAGE_FILE_SYSTEM_TYPE := erofs
+BOARD_ODMIMAGE_FILE_SYSTEM_TYPE := erofs
+BOARD_VENDOR_DLKMIMAGE_FILE_SYSTEM_TYPE := erofs
+BOARD_USERDATAIMAGE_FILE_SYSTEM_TYPE := f2fs
+
+# Workaround for error copying vendor files to recovery ramdisk
+TARGET_COPY_OUT_VENDOR := vendor
+TARGET_COPY_OUT_PRODUCT := product
+TARGET_COPY_OUT_SYSTEM_EXT := system_ext
+
+# Dynamic partitions / super
+BOARD_SUPER_PARTITION_SIZE := 15325986816
+BOARD_SUPER_PARTITION_GROUPS := group_unisoc_a
+BOARD_GROUP_UNISOC_A_SIZE := 15309209600
+BOARD_GROUP_UNISOC_A_PARTITION_LIST := system system_ext vendor product odm vendor_dlkm
+
+# Symlink
+BOARD_ROOT_EXTRA_SYMLINKS := \
+    /system/product:/product \
+    /system/system_ext:/system_ext
+
+PLATFORM_SECURITY_PATCH := 2026-05-05
+VENDOR_SECURITY_PATCH := 2026-05-05
+PLATFORM_VERSION := 15
+
+# Crypto-Decryption
+TW_INCLUDE_CRYPTO := true
+TW_INCLUDE_CRYPTO_FBE := true
+
+TARGET_SYSTEM_PROP += $(DEVICE_PATH)/system.prop
+
+# Recovery
+TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/recovery/root/system/etc/recovery.fstab
+TARGET_RECOVERY_PIXEL_FORMAT := RGBX_8888
+TARGET_NO_RECOVERY := true
+#BOARD_USES_RECOVERY_AS_BOOT := true
+TARGET_USES_MKE2FS := true
 TARGET_COPY_OUT_VENDOR := vendor
 TARGET_COPY_OUT_PRODUCT := product
 TARGET_COPY_OUT_SYSTEM_EXT := system_ext
 TARGET_COPY_OUT_ODM := odm
 TARGET_COPY_OUT_VENDOR_DLKM := vendor_dlkm
 
-BOARD_SUPER_PARTITION_SIZE := 15325986816
-BOARD_SUPER_PARTITION_GROUPS := group_unisoc
-BOARD_GROUP_UNISOC_PARTITION_LIST := system system_ext vendor odm product vendor_dlkm
-BOARD_GROUP_UNISOC_SIZE := 15309209600
-BOARD_BUILD_SUPER_IMAGE_BY_DEFAULT := false
 
-AB_OTA_UPDATER := true
-AB_OTA_PARTITIONS += \
-    boot \
-    vendor_boot \
-    dtbo \
-    vbmeta \
-    vbmeta_system \
-    vbmeta_vendor \
-    vbmeta_product \
-    vbmeta_odm \
-    system \
-    system_ext \
-    vendor \
-    odm \
-    product \
-    vendor_dlkm
-BOARD_USES_METADATA_PARTITION := true
+# Sysfs path
+BOARD_COMMON_BACKLIGHT_PATH := /sys/class/backlight/sprd_backlight/brightness
+BOARD_COMMON_FLASHLIGHT_PATH := /sys/devices/virtual/misc/sprd_flash/test
 
-# Recovery
-TARGET_RECOVERY_PIXEL_FORMAT := RGBX_8888
-TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/recovery/root/system/etc/recovery.fstab
-
-# Verified Boot
-BOARD_AVB_ENABLE := true
-BOARD_AVB_MAKE_VBMETA_IMAGE_ARGS += --flags 3
-BOARD_AVB_BOOT_KEY_PATH := $(DEVICE_PATH)/security/rsa4096_boot.pem
-BOARD_AVB_BOOT_ALGORITHM := SHA256_RSA4096
-BOARD_AVB_VENDOR_BOOT_ROLLBACK_INDEX := 0
-BOARD_AVB_VENDOR_BOOT_ROLLBACK_INDEX_LOCATION := 0
-
-# Crypto
-TW_INCLUDE_CRYPTO := true
-TW_INCLUDE_CRYPTO_FBE := true
-
-# Stock security patch level
-PLATFORM_VERSION := 15
-PLATFORM_SECURITY_PATCH := 2026-05-01
-VENDOR_SECURITY_PATCH := 2026-05-01
-TARGET_SYSTEM_PROP += $(DEVICE_PATH)/system.prop
+# Resetprop & repacktools
+TW_INCLUDE_RESETPROP := true
+TW_INCLUDE_REPACKTOOLS := true
+TW_INCLUDE_LIBRESETPROP := true
 
 # Debugging
 TWRP_INCLUDE_LOGCAT := true
 TARGET_USES_LOGD := true
 
-# Resetprop & repack tools
-TW_INCLUDE_RESETPROP := true
-TW_INCLUDE_REPACKTOOLS := true
-TW_INCLUDE_LIBRESETPROP := true
-
-# TWRP configuration
+# TWRP Configuration
 TW_THEME := portrait_hdpi
 TW_EXTRA_LANGUAGES := true
 TW_DEFAULT_LANGUAGE := zh_CN
-TW_USE_TOOLBOX := true
-TW_SUPPORT_SC27XX_INPUT_HAPTICS := true
-TW_NO_FLASH_CURRENT_TWRP := true
-TW_DEVICE_VERSION := nubia P780F01
-TW_INTERNAL_STORAGE_PATH := /data/media/0
-TW_DRM_LEGACY_MODESET := true
-TW_CUSTOM_CLOCK_POS := 810
-TW_CUSTOM_CPU_TEMP_PATH := /sys/devices/platform/charger-manager/power_supply/battery/temp
-BOARD_COMMON_BACKLIGHT_PATH := /sys/class/backlight/sprd_backlight/brightness
-BOARD_COMMON_FLASHLIGHT_PATH := /sys/devices/virtual/misc/sprd_flash/test
+TW_NO_HAPTICS := true
+#TW_NO_FLASH_CURRENT_TWRP := true
 TW_BRIGHTNESS_PATH := $(BOARD_COMMON_BACKLIGHT_PATH)
 TW_DEFAULT_BRIGHTNESS := 150
 TW_MAX_BRIGHTNESS := 4000
-TW_EXCLUDE_TWRPAPP := true
-TARGET_EXCLUDE_BOOTCTRL := true
-TARGET_NO_UPDATE_ENGINE := true
-TARGET_NO_RECOVERY_UPDATE_ENGINE := true
-USE_GENERIC_BOOTCTRL_HEADERS := true
-BOARD_BOOTCTRL_HEADER_VERSION := 0
-TARGET_BOOTCTRL_DISABLE := true
-TARGET_BOARD_PLATFORM_NO_BOOTCTRL := true
 
-# Fix fastboot reboot on Unisoc targets.
+TW_INCLUDE_FASTBOOTD := true
+TW_USE_TOOLBOX := true
+RECOVERY_SDCARD_ON_DATA := true
+TW_USE_EXTERNAL_STORAGE := true
+TW_EXCLUDE_DEFAULT_USB_INIT := true
+TW_EXCLUDE_TWRPAPP := true
+TW_NO_BIND_SYSTEM := true
+TW_SCREEN_BLANK_ON_BOOT := true
+TW_NO_LEGACY_PROPS := true
+TW_DRM_LEGACY_MODESET := true
+
+# Fix fastboot reboot
 TW_NO_FASTBOOT_BOOT := true
+

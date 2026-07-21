@@ -1,7 +1,52 @@
-# Additional TWRP flags for image flashing / backup.
+# <mount_point>      <fstype>  <device>                          <flags>
 
-/boot                 emmc    /dev/block/by-name/boot          flags=slotselect;backup=1;flashimg=1;display="Boot"
-/vendor_boot          emmc    /dev/block/by-name/vendor_boot   flags=slotselect;backup=1;flashimg=1;display="Vendor Boot"
-/dtbo                 emmc    /dev/block/by-name/dtbo          flags=slotselect;backup=1;flashimg=1;display="DTBO"
-/vbmeta               emmc    /dev/block/by-name/vbmeta        flags=slotselect;backup=1;flashimg=1;display="VBMeta"
-/super                emmc    /dev/block/by-name/super         flags=display="Super"
+# Dynamic logical partitions
+/system                  erofs    /dev/block/mapper/system              flags=display="System";slotselect;backup=1;wipeingui
+/system_ext              erofs    /dev/block/mapper/system_ext          flags=display="System_ext";slotselect;backup=1;wipeingui
+/vendor                  erofs    /dev/block/mapper/vendor              flags=display="Vendor";slotselect;backup=1;wipeingui
+/odm                     erofs    /dev/block/mapper/odm                 flags=display="Odm";slotselect;backup=1;wipeingui
+/product                 erofs    /dev/block/mapper/product             flags=display="Product";slotselect;backup=1;wipeingui
+/vendor_dlkm             erofs    /dev/block/mapper/vendor_dlkm         flags=display="Vendor_dlkm";slotselect;backup=1
+
+# Logical partition images
+/system_image            emmc     /dev/block/mapper/system              flags=display="System Image";slotselect;flashimg=1
+/system_ext_image        emmc     /dev/block/mapper/system_ext          flags=display="System_ext Image";slotselect;flashimg=1
+/vendor_image            emmc     /dev/block/mapper/vendor              flags=display="Vendor Image";slotselect;flashimg=1
+/odm_image               emmc     /dev/block/mapper/odm                 flags=display="Odm Image";slotselect;flashimg=1
+/product_image           emmc     /dev/block/mapper/product             flags=display="Product Image";slotselect;flashimg=1
+/vendor_dlkm_image       emmc     /dev/block/mapper/vendor_dlkm         flags=display="Vendor_dlkm Image";slotselect;flashimg=1
+
+# Boot-related partitions
+/boot                    emmc     /dev/block/by-name/boot               flags=display="Boot";slotselect;backup=1;flashimg=1
+/dtbo                    emmc     /dev/block/by-name/dtbo               flags=display="Dtbo";slotselect;backup=1;flashimg=1
+/vendor_boot             emmc     /dev/block/by-name/vendor_boot        flags=display="Vendor_boot";slotselect;backup=1;flashimg=1
+/init_boot               emmc     /dev/block/by-name/init_boot          flags=display="Init_boot";slotselect;backup=1;flashimg=1
+
+# AVB partitions
+/vbmeta                  emmc     /dev/block/by-name/vbmeta             flags=display="Vbmeta";slotselect;backup=1;flashimg=1
+/vbmeta_system           emmc     /dev/block/by-name/vbmeta_system      flags=display="Vbmeta_system";slotselect;backup=1;flashimg=1
+/vbmeta_vendor           emmc     /dev/block/by-name/vbmeta_vendor      flags=display="Vbmeta_vendor";slotselect;backup=1;flashimg=1
+/vbmeta_odm              emmc     /dev/block/by-name/vbmeta_odm         flags=display="Vbmeta_odm";slotselect;backup=1;flashimg=1
+/vbmeta_product          emmc     /dev/block/by-name/vbmeta_product     flags=display="Vbmeta_product";slotselect;backup=1;flashimg=1
+/vbmeta_system_ext       emmc     /dev/block/by-name/vbmeta_system_ext  flags=display="Vbmeta_system_ext";slotselect;backup=1;flashimg=1
+
+# Essential misc / persist
+/misc                    emmc     /dev/block/by-name/misc               flags=display="Misc";backup=1
+/persist                 emmc     /dev/block/by-name/persist            flags=display="Persist";backup=1
+/logo                    emmc     /dev/block/by-name/logo               flags=display="Logo";backup=1;flashimg=1
+/fbootlogo               emmc     /dev/block/by-name/fbootlogo          flags=display="FbootLogo";backup=1;flashimg=1
+
+# Metadata / cache
+/metadata                f2fs     /dev/block/by-name/metadata           flags=display="Metadata";backup=1;wipeingui
+/cache                   ext4     /dev/block/by-name/cache              flags=display="Cache";backup=1;wipeingui
+
+# User data
+/data                    f2fs     /dev/block/by-name/userdata           flags=display="Data";backup=1;wipeingui;fileencryption=ice
+
+# Optional calibration / config
+#/prodnv                  ext4     /dev/block/by-name/prodnv             flags=display="Prodnv";backup=1
+/ztecfg                  ext4     /dev/block/by-name/ztecfg             flags=display="ZteCfg";backup=1
+
+# External storage
+/external_sd             auto     /dev/block/mmcblk1p1                  flags=display="External SD";storage;wipeingui;removable
+/usb_otg                 auto     /dev/block/sda1                       flags=display="USB OTG";storage;wipeingui;removable

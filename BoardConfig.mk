@@ -94,7 +94,7 @@ BOARD_DTB_OFFSET := 0x01f00000
 
 BOARD_VENDOR_CMDLINE := console=ttyS1,115200n8 androidboot.selinux=permissive
 BOARD_VENDOR_RAMDISK_FRAGMENTS += platform
-BOARD_VENDOR_RAMDISK_FRAGMENT.platform.PREBUILT := $(LOCAL_PATH)/prebuilt/platform.cpio.lz4
+BOARD_VENDOR_RAMDISK_FRAGMENT.platform.PREBUILT := $(DEVICE_PATH)/prebuilt/platform.cpio.lz4
 BOARD_VENDOR_RAMDISK_FRAGMENT.platform.MKBOOTIMG_ARGS := --ramdisk_type PLATFORM
 BOARD_BOOTCONFIG += \
     androidboot.hardware=ums9632_1h10 \

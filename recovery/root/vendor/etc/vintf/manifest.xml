@@ -1,30 +1,38 @@
-<manifest version="1.0" type="device">
+<!--
+    Input:
+        device/sprd/vnd_mpool/product/soc/msoc/qogirn5/march/arm64/manifest.xml
+        vendor/zte/subsys-components/subsystem_daemon_vendor/manifest.xml
+-->
+<manifest version="8.0" type="device" target-level="202404">
     <hal format="aidl">
-        <name>android.hardware.security.keymint</name>
+        <name>android.hardware.graphics.allocator</name>
         <version>2</version>
-        <fqname>IKeyMintDevice/default</fqname>
+        <fqname>IAllocator/default</fqname>
     </hal>
     <hal format="aidl">
-        <name>android.hardware.security.secureclock</name>
-        <fqname>ISecureClock/default</fqname>
+        <name>android.hardware.graphics.composer3</name>
+        <version>3</version>
+        <fqname>IComposer/default</fqname>
     </hal>
     <hal format="aidl">
-        <name>android.hardware.security.sharedsecret</name>
-        <fqname>ISharedSecret/default</fqname>
+        <name>android.hardware.neuralnetworks</name>
+        <version>4</version>
+        <fqname>IDevice/armnn-gpu</fqname>
+    </hal>
+    <hal format="native">
+        <name>mapper</name>
+        <fqname>@5.0/arm</fqname>
     </hal>
     <hal format="aidl">
-        <name>android.hardware.security.keymint</name>
+        <name>vendor.sprd.hardware.enhance</name>
         <version>2</version>
-        <fqname>IRemotelyProvisionedComponent/default</fqname>
+        <fqname>IEnhance/default</fqname>
     </hal>
-    <hal format="hidl">
-        <name>android.hardware.gatekeeper</name>
-        <transport>hwbinder</transport>
-        <version>1.0</version>
-        <interface>
-            <name>IGatekeeper</name>
-            <instance>default</instance>
-        </interface>
-        <fqname>@1.0::IGatekeeper/default</fqname>
+    <hal format="aidl">
+        <name>vendor.zte.subsys</name>
+        <fqname>ISubsys/subsys</fqname>
     </hal>
+    <sepolicy>
+        <version>202404</version>
+    </sepolicy>
 </manifest>

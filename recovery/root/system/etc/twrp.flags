@@ -1,11 +1,12 @@
 # <mount_point>      <fstype>  <device>                          <flags>
 
 # Dynamic logical partitions
-/system                  erofs    /dev/block/mapper/system              flags=display="System";slotselect;backup=1;wipeingui
-/system_ext              erofs    /dev/block/mapper/system_ext          flags=display="System_ext";slotselect;backup=1;wipeingui
-/vendor                  erofs    /dev/block/mapper/vendor              flags=display="Vendor";slotselect;backup=1;wipeingui
-/odm                     erofs    /dev/block/mapper/odm                 flags=display="Odm";slotselect;backup=1;wipeingui
-/product                 erofs    /dev/block/mapper/product             flags=display="Product";slotselect;backup=1;wipeingui
+/system                  erofs    /dev/block/mapper/system              flags=display="System";slotselect;backup=1
+/system_ext              erofs    /dev/block/mapper/system_ext          flags=display="System_ext";slotselect;backup=1
+/vendor                  erofs    /dev/block/mapper/vendor              flags=display="Vendor";slotselect;backup=1
+/odm                     erofs    /dev/block/mapper/odm                 flags=display="Odm";slotselect;backup=1
+/product                 erofs    /dev/block/mapper/product             flags=display="Product";slotselect;backup=1
+/system_dlkm             erofs    /dev/block/mapper/system_dlkm         flags=display="System_dlkm";slotselect;backup=1
 /vendor_dlkm             erofs    /dev/block/mapper/vendor_dlkm         flags=display="Vendor_dlkm";slotselect;backup=1
 
 # Logical partition images
@@ -14,6 +15,7 @@
 /vendor_image            emmc     /dev/block/mapper/vendor              flags=display="Vendor Image";slotselect;flashimg=1
 /odm_image               emmc     /dev/block/mapper/odm                 flags=display="Odm Image";slotselect;flashimg=1
 /product_image           emmc     /dev/block/mapper/product             flags=display="Product Image";slotselect;flashimg=1
+/system_dlkm_image       emmc     /dev/block/mapper/system_dlkm         flags=display="System_dlkm Image";slotselect;flashimg=1
 /vendor_dlkm_image       emmc     /dev/block/mapper/vendor_dlkm         flags=display="Vendor_dlkm Image";slotselect;flashimg=1
 
 # Boot-related partitions
@@ -45,7 +47,7 @@
 
 # Optional calibration / config
 #/prodnv                  ext4     /dev/block/by-name/prodnv             flags=display="Prodnv";backup=1
-/ztecfg                  ext4     /dev/block/by-name/ztecfg             flags=display="ZteCfg";backup=1
+/ztecfg                  emmc     /dev/block/by-name/ztecfg             flags=display="ZteCfg";backup=1
 
 # External storage
 /external_sd             auto     /dev/block/mmcblk1p1                  flags=display="External SD";storage;wipeingui;removable

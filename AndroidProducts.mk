@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 PRODUCT_MAKEFILES := \
     $(LOCAL_DIR)/twrp_P780F01.mk
 

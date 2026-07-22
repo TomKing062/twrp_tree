@@ -10,31 +10,24 @@ service create_splloader_dual_slot_byname_path /system/bin/create_splloader_dual
     group root system
     disabled
     oneshot
-    seclabel u:r:create_spl_link_recovery:s0
-
-# Service to Get log
-service get_logd /system/bin/getlog.sh
-    user root
-    group root
-    disabled
-    oneshot
     seclabel u:r:recovery:s0
 
-on early-init 
-	chmod 0755 /system/bin/getlog.sh
-	start get_logd
 	
 on boot
-	start health-hal-2-1
-	start vendor.sprd.boot-hal-1-2
+	start vendor.boot-default
 
 on init
+    # Apply strict SELinux checking of PROT_EXEC on mmap/mprotect calls.
+    write /sys/fs/selinux/checkreqprot 0
+    start healthd
     start create_splloader_dual_slot_byname_path
 
     export PATH /sbin:/system/bin:/vendor/bin
     export SECONDARY_STORAGE /storage/sdcard0
 
     mkdir /storage
+    mkdir /mnt
+    mkdir /mnt/vendor
     mkdir /storage/sdcard1
     mkdir /storage/sdcard0
     symlink /storage/sdcard0 /mnt/sdcard

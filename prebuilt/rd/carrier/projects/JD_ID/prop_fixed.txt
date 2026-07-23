@@ -1,0 +1,11 @@
+persist.vendor.custom.variant.id=JD_ID 
+ro.oem.key1=JD_ID 
+ro.vendor.feature.zte_feature_no_limit_doubleapp=true 
+ro.feature.zte_feature_enabled_ime=com.preff.kb.zx/com.preff.kb.LatinIME 
+ro.feature.zte_feature_default_ime=com.preff.kb.zx/com.preff.kb.LatinIME 
+ro.vendor.feature.zte_feature_launcher_resource=jd_id_zte_p780f01 
+ro.build.display.id=MyOS15.0.7_Z2464N_ID 
+persist.sys.timezone=Asia/Jakarta 
+ro.appsflyer.preinstall.path=/system/etc/pre_install.appsflyer 
+ro.vendor.feature.zte_feature_question_website=true
+

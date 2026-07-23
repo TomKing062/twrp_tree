@@ -93,9 +93,6 @@ BOARD_KERNEL_TAGS_OFFSET := 0x00000100
 BOARD_DTB_OFFSET := 0x01f00000
 
 BOARD_VENDOR_CMDLINE := console=ttyS1,115200n8 bootconfig bootconfig androidboot.selinux=permissive
-BOARD_VENDOR_RAMDISK_FRAGMENTS = ramdisk
-BOARD_VENDOR_RAMDISK_FRAGMENT.ramdisk.PREBUILT := $(DEVICE_PATH)/prebuilt/platform.cpio.lz4
-BOARD_VENDOR_RAMDISK_FRAGMENT.ramdisk.MKBOOTIMG_ARGS := --ramdisk_type PLATFORM
 BOARD_BOOTCONFIG += \
     androidboot.hardware=ums9632_1h10 \
     androidboot.dtbo_idx=0
@@ -218,7 +215,8 @@ TW_THEME := portrait_hdpi
 TW_EXTRA_LANGUAGES := true
 TW_DEFAULT_LANGUAGE := zh_CN
 TW_USE_TOOLBOX := true
-TW_SUPPORT_SC27XX_INPUT_HAPTICS := true
+TW_SUPPORT_INPUT_AIDL_HAPTICS := true
+TW_SUPPORT_INPUT_AIDL_HAPTICS_FQNAME := "IVibrator/default"
 TW_NO_FLASH_CURRENT_TWRP := true
 TW_INTERNAL_STORAGE_PATH := /data/media/0
 TW_DRM_LEGACY_MODESET := true
@@ -238,4 +236,4 @@ TW_NO_LEGACY_PROPS := true
 
 # Fix fastboot reboot
 TW_NO_FASTBOOT_BOOT := true
-
+TW_EXCLUDE_APEX := true

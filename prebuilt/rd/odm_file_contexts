@@ -1,0 +1,14 @@
+/(odm|system/odm)/bin/halo_control u:object_r:halo_control_exec:s0
+/(odm|system/odm)/bin/hw/android\.hardware\.nfc-service\.sec    u:object_r:hal_nfc_default_exec:s0
+/(odm|system/odm)/bin/hw/android\.hardware\.nfc@1\.2-service\.sec    u:object_r:hal_nfc_default_exec:s0
+/data/nfc(/.*)?              u:object_r:nfc_data_file:s0
+/data/vendor/halo(/.*)?    u:object_r:halo_save_file:s0
+/mnt/vendor/productinfo/ID.dat      u:object_r:prodv_file:s0
+/mnt/vendor/productinfo/ID.dat.bak      u:object_r:prodv_file:s0
+/mnt/vendor/productinfo/log.dat       u:object_r:prodv_file:s0
+/mnt/vendor/productinfo/pubkey.dat      u:object_r:prodv_file:s0
+/mnt/vendor/productinfo/license_record.dat      u:object_r:prodv_file:s0
+/mnt/vendor/productinfo/license_record.dat.bak      u:object_r:prodv_file:s0
+/dev/madev0         u:object_r:madev_fp_device:s0
+/dev/sec-nfc    u:object_r:nfc_device:s0
+/dev/goodix_fp         u:object_r:goodixfingerprintd_device:s0

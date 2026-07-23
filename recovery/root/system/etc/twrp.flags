@@ -1,13 +1,13 @@
 # <mount_point>      <fstype>  <device>                          <flags>
 
 # Dynamic logical partitions
-/system                  erofs    /dev/block/mapper/system              flags=display="System";slotselect;backup=1
-/system_ext              erofs    /dev/block/mapper/system_ext          flags=display="System_ext";slotselect;backup=1
-/vendor                  erofs    /dev/block/mapper/vendor              flags=display="Vendor";slotselect;backup=1
-/odm                     erofs    /dev/block/mapper/odm                 flags=display="Odm";slotselect;backup=1
-/product                 erofs    /dev/block/mapper/product             flags=display="Product";slotselect;backup=1
-/system_dlkm             erofs    /dev/block/mapper/system_dlkm         flags=display="System_dlkm";slotselect;backup=1
-/vendor_dlkm             erofs    /dev/block/mapper/vendor_dlkm         flags=display="Vendor_dlkm";slotselect;backup=1
+/system                  erofs    /dev/block/mapper/system              flags=display="System";slotselect;backup=1;logical
+/system_ext              erofs    /dev/block/mapper/system_ext          flags=display="System_ext";slotselect;backup=1;logical
+/vendor                  erofs    /dev/block/mapper/vendor              flags=display="Vendor";slotselect;backup=1;logical
+/odm                     erofs    /dev/block/mapper/odm                 flags=display="Odm";slotselect;backup=1;logical
+/product                 erofs    /dev/block/mapper/product             flags=display="Product";slotselect;backup=1;logical
+/system_dlkm             erofs    /dev/block/mapper/system_dlkm         flags=display="System_dlkm";slotselect;backup=1;logical
+/vendor_dlkm             erofs    /dev/block/mapper/vendor_dlkm         flags=display="Vendor_dlkm";slotselect;backup=1;logical
 
 # Logical partition images
 /system_image            emmc     /dev/block/mapper/system              flags=display="System Image";slotselect;flashimg=1
@@ -34,21 +34,21 @@
 
 # Essential misc / persist
 /misc                    emmc     /dev/block/by-name/misc               flags=display="Misc";backup=1
-/persist                 emmc     /dev/block/by-name/persist            flags=display="Persist";backup=1
+/persist                 emmc     /dev/block/by-name/persist            flags=display="Persist";backup=0
 /logo                    emmc     /dev/block/by-name/logo               flags=display="Logo";backup=1;flashimg=1
 /fbootlogo               emmc     /dev/block/by-name/fbootlogo          flags=display="FbootLogo";backup=1;flashimg=1
 
 # Metadata / cache
 /metadata                f2fs     /dev/block/by-name/metadata           flags=display="Metadata";backup=1;wipeingui
-/cache                   ext4     /dev/block/by-name/cache              flags=display="Cache";backup=1;wipeingui
+/cache                   ext4     /dev/block/by-name/cache              flags=display="Cache";backup=0;wipeingui
 
 # User data
-/data                    f2fs     /dev/block/by-name/userdata           flags=display="Data";backup=1;wipeingui;fileencryption=ice
+/data                    f2fs     /dev/block/by-name/userdata           flags=display="Data";backup=1;wipeingui;fileencryption=aes-256-xts:aes-256-cts:v2+inlinecrypt_optimized
 
 # Optional calibration / config
-#/prodnv                  ext4     /dev/block/by-name/prodnv             flags=display="Prodnv";backup=1
+/prodnv                  ext4     /dev/block/by-name/prodnv             flags=display="Prodnv";backup=1
 /ztecfg                  emmc     /dev/block/by-name/ztecfg             flags=display="ZteCfg";backup=1
 
 # External storage
 /external_sd             auto     /dev/block/mmcblk1p1                  flags=display="External SD";storage;wipeingui;removable
-/usb_otg                 auto     /dev/block/sda1                       flags=display="USB OTG";storage;wipeingui;removable
+/usb_otg                 auto     /dev/block/sdd1                       flags=display="USB OTG";storage;wipeingui;removable

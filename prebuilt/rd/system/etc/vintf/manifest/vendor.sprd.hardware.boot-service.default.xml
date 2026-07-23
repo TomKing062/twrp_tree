@@ -1,0 +1,10 @@
+<!--
+    Input:
+        vendor/sprd/modules/uniboot/aidl/default/vendor.sprd.hardware.boot-service.default.xml
+-->
+<manifest version="8.0" type="device">
+    <hal format="aidl">
+        <name>vendor.sprd.hardware.boot</name>
+        <fqname>IUniBootControl/default</fqname>
+    </hal>
+</manifest>

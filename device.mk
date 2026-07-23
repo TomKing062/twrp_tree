@@ -17,7 +17,8 @@
 LOCAL_PATH := device/nubia/P780F01
 
 PRODUCT_USE_DYNAMIC_PARTITIONS := true
-
+PRODUCT_COPY_FILES += \
+    $(call find-copy-subdir-files,*,$(LOCAL_PATH)/prebuilt/rd,vendor_ramdisk)
 # A/B
 TARGET_IS_VAB := true
 ENABLE_VIRTUAL_AB := true

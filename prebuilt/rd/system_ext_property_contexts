@@ -1,0 +1,275 @@
+#line 1 "system/sepolicy/flagging/te_macros"
+####################################
+# is_flag_enabled(flag, rules)
+# SELinux rules which apply only if given feature is turned on
+
+
+####################################
+# is_flag_disabled(flag, rules)
+# SELinux rules which apply only if given feature is turned off
+
+
+####################################
+# starting_at_board_api(api_level, rules)
+#
+# This macro conditionally exposes SELinux rules within system/sepolicy/public,
+# ensuring they are available to vendors only when the board API level is at or
+# above the specified 'api_level'.
+#
+# * Platform sepolicy: Rules are always enabled, regardless of API level.
+# * Vendor sepolicy: Rules are enabled only when the board API level meets or
+#                    exceeds the value provided in 'api_level'.
+#
+# Apply this macro to public types and attributes (in system/sepolicy/public) to
+# restrict vendor access based on board API level.
+
+#line 1 "out_odm/soong/.intermediates/system/sepolicy/contexts/system_ext_property_contexts/android_common/ums9632_1h10/newline"
+
+#line 1 "device/sprd/sys_sepolicy/system_ext/private/property_contexts"
+#for CTA
+ro.cta.security.feature		u:object_r:system_prop:s0
+persist.sys.cta.security.log	u:object_r:system_prop:s0
+
+#for debugfs
+persist.dbg.keep_debugfs_mounted	u:object_r:system_prop:s0
+
+#for storage
+persist.storage         u:object_r:vold_prop:s0
+sys.internal.emulated   u:object_r:vold_prop:s0
+
+#for unipnp
+persist.unipnp.      u:object_r:unipnp_prop:s0
+vendor.unipnp.      u:object_r:unipnp_prop:s0
+
+#add for unisoc silent reboot
+persist.silent.reboot.enabled u:object_r:unisoc_silent_reboot_prop:s0
+persist.config.silent.reboot. u:object_r:unisoc_silent_reboot_prop:s0
+
+ro.telephony.se.enable      u:object_r:system_se_prop:s0
+
+ro.product.model.display u:object_r:build_prop:s0 exact string
+ro.build.software.version u:object_r:build_prop:s0 exact string
+
+#for audio
+af.media.systemready.state      u:object_r:system_prop:s0
+
+#for big volume
+persist.audio.bigvolume.enabled u:object_r:system_prop:s0
+persist.audio.bigvolume.switch  u:object_r:system_prop:s0
+ro.audio.bigvolume.music_speaker u:object_r:system_prop:s0
+ro.audio.bigvolume.voice_speaker u:object_r:system_prop:s0
+ro.audio.bigvolume.voice_earpiece u:object_r:system_prop:s0
+
+#for dump hprofs when gralloc leak
+sys.debug.dumpinfo.type u:object_r:sys_dumpinfo_prop:s0
+
+#for spi
+persist.sys.spi.afbc.disable u:object_r:spi_afbc_disable_prop:s0
+persist.sys.single.spi.enable u:object_r:single_spi_enable_prop:s0
+
+#for check enter splitscreen
+sys.splitscreen.enter u:object_r:split_screen_enter_prop:s0
+
+#for check if dump is allowed
+sys.isdisable.dump u:object_r:sys_isdisable_dump_prop:s0
+
+#for ummd
+ro.ummd.    u:object_r:ummd_prop:s0
+
+#For NFC
+ro.vendor.nfc                    u:object_r:vendor_nfc_prop:s0
+
+#for ylog
+vendor.minidump.crash_reason   u:object_r:minidump_prop:s0
+#line 1 "out_odm/soong/.intermediates/system/sepolicy/contexts/system_ext_property_contexts/android_common/ums9632_1h10/newline"
+
+#line 1 "device/zte/sepolicy/private/property_contexts"
+##########################
+# property service keys
+#
+#
+persist.log.jtag  u:object_r:radio_prop:s0
+persist.sys.ztelog.enable  u:object_r:logd_prop:s0
+persist.sys.logbylogcat.enable  u:object_r:logd_prop:s0
+
+persist.ms.country.loc_info              u:object_r:radio_prop:s0
+ms.systemserver                          u:object_r:radio_prop:s0
+telephony.country_code                   u:object_r:radio_prop:s0
+
+ro.carrier.default_id      u:object_r:jsonweb_default_prop:s0
+
+
+ms.                         u:object_r:ms_prop:s0
+#nfc prop
+#persist.nfc.               u:object_r:nfc_nxp_prop:s0
+
+ro.config.wallpaper            u:object_r:jsonweb_system_prop:s0
+ro.config.lock_wallpaper       u:object_r:jsonweb_system_prop:s0
+
+# for max stream volume
+ro.config.vc_call_vol_steps          u:object_r:jsonweb_system_prop:s0
+ro.config.ring_vol_steps             u:object_r:jsonweb_system_prop:s0
+ro.config.media_vol_steps            u:object_r:jsonweb_system_prop:s0
+ro.config.alarm_vol_steps            u:object_r:jsonweb_system_prop:s0
+ro.config.notify_vol_steps           u:object_r:jsonweb_system_prop:s0
+
+# for default stream volume
+ro.config.vc_call_vol_default        u:object_r:jsonweb_system_prop:s0
+ro.config.ring_vol_default           u:object_r:jsonweb_system_prop:s0
+ro.config.media_vol_default          u:object_r:jsonweb_system_prop:s0
+ro.config.alarm_vol_default          u:object_r:jsonweb_system_prop:s0
+ro.config.notify_vol_default         u:object_r:jsonweb_system_prop:s0
+
+persist.backup.ntpServer u:object_r:jsonweb_default_prop:s0
+ro.build.shutdown_timeout u:object_r:jsonweb_default_prop:s0
+
+qemu.hw.mainkeys  u:object_r:jsonweb_default_prop:s0
+
+ro.setupwizard.mode  u:object_r:jsonweb_default_prop:s0
+
+ro.softap.sup_sprd.reqstanum  u:object_r:jsonweb_system_prop:s0
+ro.ril.fccid  u:object_r:jsonweb_system_prop:s0
+
+
+ro.notsupport.hwpin              u:object_r:jsonweb_default_prop:s0
+
+ro.lockscreen.disable.default              u:object_r:jsonweb_default_prop:s0
+
+ro.bluetooth.hfp.ver u:object_r:jsonweb_default_prop:s0
+
+persist.demo.hdmirotationlock u:object_r:jsonweb_default_prop:s0
+
+qcom.bt.dev_power_class u:object_r:jsonweb_default_prop:s0
+
+bt.avrcp-playstatus.blacklist u:object_r:jsonweb_default_prop:s0
+
+ro.opa.eligible_device u:object_r:jsonweb_default_prop:s0
+persist.camera.gyro.disable u:object_r:jsonweb_default_prop:s0
+
+# for ftmd factory command
+ftmd.anti_usb_install        u:object_r:system_prop:s0
+
+testing.mediascanner.skiplist      u:object_r:jsonweb_default_prop:s0
+
+ro.build.sw_internal_version         u:object_r:jsonweb_system_prop:s0
+ro.build.MiFavor_version      u:object_r:jsonweb_system_prop:s0
+
+#add for app signature_key
+ro.security.signature_key          u:object_r:jsonweb_default_prop:s0
+
+ro.program_type             u:object_r:system_prop:s0
+ro.anti_theft_flag          u:object_r:system_prop:s0
+
+# DTS_AUDIO START
+vendor.dts.audio.   u:object_r:dts_audio_prop:s0
+ro.vendor.dts.      u:object_r:dts_audio_prop:s0
+#ro.dts.             u:object_r:dts_audio_prop:s0
+#dts.audio.          u:object_r:dts_audio_prop:s0
+# DTS_AUDIO END
+
+# selftest prop for emode
+persist.vendor.sys.zteselftest.enable    u:object_r:shell_prop:s0
+persist.vendor.sys.editimsapn.enable    u:object_r:shell_prop:s0
+
+#add for dynamic activity log switch
+persist.vendor.sys.activitylog      u:object_r:system_prop:s0
+
+#add for sar switch
+persist.vendor.sar.ota                    u:object_r:system_prop:s0
+
+#for radarsrevice
+odm.wetest_on                 u:object_r:logd_prop:s0
+
+# add for usb
+ro.usb.orignal.design                     u:object_r:jsonweb_default_prop:s0
+
+#add for zram writeback
+persist.zte.mindsync.zram.wb_enabled  u:object_r:system_prop:s0
+persist.zte.mindsync.zram.wb_size     u:object_r:system_prop:s0
+persist.zte.mindsync.zram.wb_debug    u:object_r:system_prop:s0
+
+#add for extend ringtone type in SimRingtoneHelper.java
+ro.vendor.config.ringtone_2             u:object_r:systemsound_config_prop:s0 exact string
+ro.vendor.config.notification_sound_2   u:object_r:systemsound_config_prop:s0 exact string
+ro.config.message                       u:object_r:systemsound_config_prop:s0 exact string
+ro.config.message_2                     u:object_r:systemsound_config_prop:s0 exact string
+
+#zte add begin, to support speaker policy mute
+persist.sys.an.speaker.enable  u:object_r:system_prop:s0
+#zte add end
+
+#zte add begin, to support exporting audio dump in user version.
+af.media.audiofw.dump                   u:object_r:system_prop:s0
+#zte add end
+
+persist.sys.mdn.number                            u:object_r:jsonweb_system_prop:s0
+persist.sys.variable.u999                         u:object_r:jsonweb_system_prop:s0
+
+#add for zte status bar height
+persist.zte.status_bar_height     u:object_r:system_prop:s0
+
+#zte add for litelog
+persist.sys.ztelitelog.enable   u:object_r:logd_prop:s0
+
+#zte add begin, to close lmk unisoc hook
+ro.lmk.enable_unisoc_hook             u:object_r:lmkd_config_prop:s0 exact bool
+#zte add end
+
+#zte add begin, to close lmk unisoc fastkill
+ro.lmk.enable_unisoc_fastkill         u:object_r:lmkd_config_prop:s0 exact bool
+#zte add end
+
+#zte add begin, hdmi to csi cast
+media.audio.device_policy    u:object_r:logd_prop:s0
+media.audio.hdmiin           u:object_r:logd_prop:s0
+#zte add end
+
+#zte add for P720M01
+ro.product.cmcc_cmei       u:object_r:system_prop:s0
+ro.product.serialno       u:object_r:system_prop:s0
+ro.product.sn       u:object_r:system_prop:s0
+ro.ctei                  u:object_r:system_prop:s0
+ro.product.wifimac       u:object_r:system_prop:s0
+vendor.ctei              u:object_r:system_prop:s0
+
+#zte add for Netflix HD property
+ro.netflix.bsp_rev    u:object_r:system_prop:s0 exact string
+
+#add for jankyframe maxnum
+persist.jankyframe.maxnum    u:object_r:system_prop:s0 exact int
+
+#zte add for Mbb project speed limit control
+persist.vendor.speed.limit     u:object_r:system_prop:s0
+modem.zte.net.interface     u:object_r:system_prop:s0
+
+# add for config customize scheme
+persist.custom.                       u:object_r:system_prop:s0
+persist.Settings.MULTIPLE_DESKTOPS    u:object_r:system_prop:s0
+
+ro.facebook.partnerid       u:object_r:system_prop:s0
+
+
+#add for uSmartAgent app
+5g.module.updating       u:object_r:system_prop:s0
+vendor.sys.run.cmd       u:object_r:system_prop:s0
+
+#add for hy ab-update
+persist.sys.cmcc.ota.mode             u:object_r:jsonweb_system_prop:s0
+persist.cmcc.ota.path                 u:object_r:jsonweb_system_prop:s0
+
+#zte GXYD
+ro.mac     u:object_r:system_prop:s0
+
+#zte add for zhijiatonghua of P720M01
+sn       u:object_r:system_prop:s0
+uid       u:object_r:system_prop:s0
+cmei       u:object_r:system_prop:s0
+deviceMac       u:object_r:system_prop:s0
+wlanMac       u:object_r:system_prop:s0
+deviceType       u:object_r:system_prop:s0
+appKey       u:object_r:system_prop:s0
+appSecret       u:object_r:system_prop:s0
+ro.build.characteristics       u:object_r:system_prop:s0
+ro.product.cmcc_andlinkauthkey       u:object_r:system_prop:s0
+#line 1 "out_odm/soong/.intermediates/system/sepolicy/contexts/system_ext_property_contexts/android_common/ums9632_1h10/newline"
+

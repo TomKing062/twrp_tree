@@ -30,6 +30,7 @@ import /init.recovery.unisoc_decrypt.fbe.rc
 
 on init
 	chmod 0755 /system/bin/prepdecrypt.sh
+	chmod 0755 /system/bin/twrp-switch-userdata.sh
 	
 # && property:ro.boot.dynamic_partitions=true prop is only for devices with dynamic partitions.
 # This property trigger will automatically be removed from the file at the end of the build
@@ -50,7 +51,7 @@ on property:ro.crypto.state=encrypted && property:ro.boot.dynamic_partitions=tru
 # on property:hwservicemanager.ready=true
 
 on late-init
-    start vendor.gatekeeper_default
-    start vendor.keymint-unisoc-3.0
+    start vendor.gatekeeper-1-0
+    start vendor.unisoc.keymint-1-0
     setprop vendor.sprd.storageproxyd.enabled 1
 

@@ -1,9 +1,0 @@
-service vendor.keymint-unisoc-3.0 /vendor/bin/hw/android.hardware.security.keymintV3.0-unisoc.service.trusty
-    class early_hal
-    user system
-    group system drmrpc
-    # The keymint service is not allowed to restart.
-    # If it crashes, a device restart is required.
-
-on cali-start
-    start vendor.keymint-unisoc-3.0

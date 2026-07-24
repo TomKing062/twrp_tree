@@ -17,8 +17,7 @@
 LOCAL_PATH := device/nubia/P780F01
 
 PRODUCT_USE_DYNAMIC_PARTITIONS := true
-PRODUCT_COPY_FILES += \
-    $(call find-copy-subdir-files,*,$(LOCAL_PATH)/prebuilt/rd,vendor_ramdisk)
+
 # A/B
 TARGET_IS_VAB := true
 ENABLE_VIRTUAL_AB := true
@@ -31,11 +30,31 @@ PRODUCT_PACKAGES += \
 
 # Userdata checkpoint
 PRODUCT_PACKAGES += \
-    checkpoint_gc \
-    snapuserd
+    checkpoint_gc
+
+# Boot control HAL
+PRODUCT_PACKAGES += \
+    vendor.sprd.hardware.boot@1.2-impl \
+    vendor.sprd.hardware.boot@1.2-service
+
+PRODUCT_PACKAGES += \
+    libgptutils \
+    libz \
+    libcutils
+
+PRODUCT_PACKAGES_DEBUG += \
+    bootctl
+
+# Keymint/Security
+PRODUCT_PACKAGES += \
+    android.hardware.security.keymint \
+    android.hardware.security.secureclock \
+    android.hardware.security.sharedsecret
 
 # Fastbootd
 PRODUCT_PACKAGES += \
+    android.hardware.fastboot@1.0-impl-mock \
+    android.hardware.fastboot@1.0-impl-mock.recovery \
     fastbootd
 
 # OTA Certs

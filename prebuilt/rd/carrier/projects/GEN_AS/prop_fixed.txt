@@ -1,9 +1,0 @@
-persist.vendor.custom.variant.id=GEN_AS 
-ro.oem.key1=GEN_AS 
-ro.feature.zte_feature_enabled_ime=com.preff.kb.zx/com.preff.kb.LatinIME 
-ro.feature.zte_feature_default_ime=com.preff.kb.zx/com.preff.kb.LatinIME 
-ro.vendor.feature.zte_feature_no_limit_doubleapp=true 
-ro.vendor.feature.zte_feature_launcher_resource=gen_as_zte_p780f01 
-ro.appsflyer.preinstall.path=/system/etc/pre_install.appsflyer 
-ro.vendor.feature.zte_feature_question_website=true
-

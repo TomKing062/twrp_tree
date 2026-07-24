@@ -1,8 +1,0 @@
-persist.vendor.custom.variant.id=XLS_ID 
-ro.oem.key1=XLS_ID 
-ro.feature.zte_feature_enabled_ime=com.preff.kb.zx/com.preff.kb.LatinIME 
-ro.feature.zte_feature_default_ime=com.preff.kb.zx/com.preff.kb.LatinIME 
-ro.build.display.id=MyOS15.0.1_Z2464N_XLS 
-ro.vendor.feature.zte_feature_launcher_resource=xls_id_zte_p780f01_zte_gen_as 
-ro.appsflyer.preinstall.path=/system/etc/pre_install.appsflyer
-

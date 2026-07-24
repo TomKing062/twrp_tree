@@ -1,8 +1,0 @@
-persist.vendor.custom.variant.id=GEN_NON_EEA 
-ro.oem.key1=GEN_NON_EEA 
-ro.feature.zte_feature_enabled_ime=com.google.android.inputmethod.latin/com.android.inputmethod.latin.LatinIME 
-ro.feature.zte_feature_default_ime=com.google.android.inputmethod.latin/com.android.inputmethod.latin.LatinIME 
-ro.build.display.id=MyOS15.0.6_Z2464N_NEEA 
-ro.vendor.feature.zte_feature_launcher_resource=gen_non_eea_zte_p780f01 
-ro.appsflyer.preinstall.path=/system/etc/pre_install_block.appsflyer
-

@@ -34,7 +34,7 @@
 
 # Essential misc / persist
 /misc                    emmc     /dev/block/by-name/misc               flags=display="Misc";backup=1
-/persist                 emmc     /dev/block/by-name/persist            flags=display="Persist";backup=0
+/persist                 ext4     /dev/block/by-name/persist            flags=display="Persist";backup=0
 /logo                    emmc     /dev/block/by-name/logo               flags=display="Logo";backup=1;flashimg=1
 /fbootlogo               emmc     /dev/block/by-name/fbootlogo          flags=display="FbootLogo";backup=1;flashimg=1
 

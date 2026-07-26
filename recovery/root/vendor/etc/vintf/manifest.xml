@@ -3,7 +3,7 @@
         device/sprd/vnd_mpool/product/soc/msoc/qogirn5/march/arm64/manifest.xml
         vendor/zte/subsys-components/subsystem_daemon_vendor/manifest.xml
 -->
-<manifest version="4.0" type="device" target-level="202404">
+<manifest version="8.0" type="device" target-level="202404">
     <hal format="aidl">
         <name>android.hardware.graphics.allocator</name>
         <version>2</version>

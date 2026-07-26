@@ -1,0 +1,32 @@
+#This file has been modified by Unisoc (Shanghai) Technologies Co., Ltd in 2023.
+
+service vendor.health-default /vendor/bin/hw/android.hardware.health-service.example
+    setenv LD_LIBRARY_PATH /vendor/lib64:/vendor/lib:/system/lib64:/system/lib:/sbin
+    ##class hal
+    user system
+    group system
+    capabilities WAKE_ALARM
+    file /dev/kmsg w
+    seclabel u:r:recovery:s0
+
+service vendor.charger /vendor/bin/hw/android.hardware.health-service.example --charger
+    ##class charger
+    seclabel u:r:charger_vendor:s0
+    user system
+    group system wakelock input
+    capabilities SYS_BOOT
+    file /dev/kmsg w
+    file /sys/fs/pstore/console-ramoops-0 r
+    file /sys/fs/pstore/console-ramoops r
+    file /proc/last_kmsg r
+
+
+on property:vendor.all.modules.ready=1
+    wait /sys/class/power_supply/battery/temp
+    wait /sys/class/power_supply/battery/temp
+    start vendor.health-default
+    start vendor.boot-default
+    start vendor.sprd.hardware.vibrator-service
+    start gatekeeper_default
+    start vendor.keymint-unisoc-3.0
+

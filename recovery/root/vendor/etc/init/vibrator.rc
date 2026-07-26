@@ -1,0 +1,15 @@
+on early-boot
+    chmod 0666 /dev/awinic_haptic
+    chmod 0666 /dev/awinic_x_haptic
+    chown system system /dev/aac_richtap_dev
+    chown system system /dev/awinic_haptic
+    chown system system /dev/awinic_x_haptic
+
+service vendor.sprd.hardware.vibrator-service /vendor/bin/hw/vendor.sprd.hardware.vibrator-service
+    setenv RICHTAP_DEVICE_PATH  /dev/awinic_haptic;/dev/awinic_x_haptic
+    setenv ENV_RICHTAP_CONFIG_PATH /vendor/etc/aac_richtap.config;/vendor/etc/aac_richtap_1.config
+    setenv LD_LIBRARY_PATH /vendor/lib64:/vendor/lib:/system/lib64:/system/lib:/sbin
+    class hal
+    user system
+    group system input
+    seclabel u:r:recovery:s0

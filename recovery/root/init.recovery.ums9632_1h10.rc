@@ -1,2 +1,1 @@
 import /init.recovery.common.rc
-import /init.recovery.unisoc_decrypt.rc

@@ -5,23 +5,11 @@
 #
 
 
-
-service healthd /system/bin/healthd -r
-    critical
-    seclabel u:r:healthd:s0
-
 service create_splloader_dual_slot_byname_path /system/bin/create_splloader_dual_slot_byname_path.sh
     user root
     group root system
     disabled
     oneshot
-    seclabel u:r:recovery:s0
-
-service vendor.sprd.hardware.vibrator-service /system/bin/vendor.sprd.hardware.vibrator-service
-    class hal
-    user root
-    group root system
-    setenv LD_LIBRARY_PATH /vendor/lib64:/vendor/lib:/system/lib64:/system/lib:/sbin
     seclabel u:r:recovery:s0
 
 # Service to Get log
@@ -38,17 +26,12 @@ on early-init
 
 
 on init
-    # Apply strict SELinux checking of PROT_EXEC on mmap/mprotect calls.
-    write /sys/fs/selinux/checkreqprot 0
-    start healthd
     start create_splloader_dual_slot_byname_path
 
     export PATH /sbin:/system/bin:/vendor/bin
     export SECONDARY_STORAGE /storage/sdcard0
 
     mkdir /storage
-    mkdir /mnt
-    mkdir /mnt/vendor
     mkdir /storage/sdcard1
     mkdir /storage/sdcard0
     symlink /storage/sdcard0 /mnt/sdcard
@@ -113,9 +96,6 @@ on init
     mkdir /config/usb_gadget/g1/functions/gser.gs7 0770 shell shell
 
 on boot
-    start vendor.sprd.hardware.vibrator-service
-    start health-hal-2-1
-    start vendor.sprd.boot-hal-1-2
     setprop sys.usb.configfs 1
 
     chmod 660 /sys/class/power_supply/battery/charger.0/stop_charge

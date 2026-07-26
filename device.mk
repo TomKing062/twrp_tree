@@ -32,10 +32,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     checkpoint_gc
 
-# Boot control HAL
-PRODUCT_PACKAGES += \
-    vendor.sprd.hardware.boot@1.2-impl \
-    vendor.sprd.hardware.boot@1.2-service
 
 PRODUCT_PACKAGES += \
     libgptutils \
@@ -53,8 +49,6 @@ PRODUCT_PACKAGES += \
 
 # Fastbootd
 PRODUCT_PACKAGES += \
-    android.hardware.fastboot@1.0-impl-mock \
-    android.hardware.fastboot@1.0-impl-mock.recovery \
     fastbootd
 
 # OTA Certs

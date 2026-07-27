@@ -1,8 +1,0 @@
-service vendor.keymint-unisoc-3.0 /vendor/bin/hw/android.hardware.security.keymintV3.0-unisoc.service.trusty
-    setenv LD_LIBRARY_PATH /vendor/lib64:/vendor/lib:/system/lib64:/system/lib:/sbin
-    class early_hal
-    user system
-    group system drmrpc
-    seclabel u:r:recovery:s0
-    # The keymint service is not allowed to restart.
-    # If it crashes, a device restart is required.

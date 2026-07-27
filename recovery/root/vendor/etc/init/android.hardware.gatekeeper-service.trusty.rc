@@ -1,6 +1,0 @@
-service vendor.gatekeeper_default /vendor/bin/hw/android.hardware.gatekeeper-service.trusty
-    setenv LD_LIBRARY_PATH /vendor/lib64:/vendor/lib:/system/lib64:/system/lib:/sbin
-    class hal
-    user system
-    group system
-    seclabel u:r:recovery:s0

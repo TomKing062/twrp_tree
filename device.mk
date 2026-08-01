@@ -9,7 +9,7 @@ LOCAL_PATH := device/nubia/P780F01
 
 PRODUCT_USE_DYNAMIC_PARTITIONS := true
 PRODUCT_VIRTUAL_AB_OTA := true
-PRODUCT_SHIPPING_API_LEVEL := 35
+PRODUCT_SHIPPING_API_LEVEL := 34
 
 # Retain the factory payload required before dynamic partitions are mounted.
 SPRD_VENDOR_RAMDISK_FILES := \

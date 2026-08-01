@@ -1,38 +1,44 @@
-#!/bin/bash
-# recovery.sh - Restore original files from patch/backup directory
+#!/bin/sh
+# Restore files saved by patch.sh.
+set -eu
 
-set -e
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+DEFAULT_SOURCE_ROOT=$(CDPATH= cd -- "$SCRIPT_DIR/../../../../.." && pwd)
+SOURCE_ROOT=${TWRP_SOURCE:-$DEFAULT_SOURCE_ROOT}
+BACKUP_ROOT="$SCRIPT_DIR/original"
+MANIFEST="$SCRIPT_DIR/source-files.txt"
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PATCH_SRC="$SCRIPT_DIR/patch"
-BACKUP_DIR="$PATCH_SRC/backup"
-SOURCE_ROOT="$(cd "$SCRIPT_DIR/../../../../.." && pwd)"
-
-if [ ! -d "$BACKUP_DIR" ]; then
-    echo "Error: Backup directory $BACKUP_DIR does not exist, cannot restore."
+[ -d "$SOURCE_ROOT" ] || {
+    echo "TWRP source root does not exist: $SOURCE_ROOT" >&2
     exit 1
-fi
+}
+[ -f "$MANIFEST" ] || {
+    echo "Missing source manifest: $MANIFEST" >&2
+    exit 1
+}
 
-echo "=========================================="
-echo "Restoring from backup: $BACKUP_DIR"
-echo "Target source root: $SOURCE_ROOT"
-echo "=========================================="
+# Check that restore is complete before replacing any source file.
+while IFS= read -r rel || [ -n "$rel" ]; do
+    case "$rel" in
+        ''|'#'*) continue ;;
+    esac
+    [ -f "$SOURCE_ROOT/$rel" ] || {
+        echo "Missing source file: $SOURCE_ROOT/$rel" >&2
+        exit 1
+    }
+    [ -f "$BACKUP_ROOT/$rel" ] || {
+        echo "Missing original backup: $BACKUP_ROOT/$rel" >&2
+        echo "Run patch.sh from a pristine source checkout before attempting restore." >&2
+        exit 1
+    }
+done < "$MANIFEST"
 
-cd "$BACKUP_DIR"
-find . -type f | while read -r file; do
-    rel_path="${file#./}"
-    target_file="$SOURCE_ROOT/$rel_path"
-    backup_file="$BACKUP_DIR/$rel_path"
+while IFS= read -r rel || [ -n "$rel" ]; do
+    case "$rel" in
+        ''|'#'*) continue ;;
+    esac
+    cp -p "$BACKUP_ROOT/$rel" "$SOURCE_ROOT/$rel"
+    printf 'restored  %s\n' "$rel"
+done < "$MANIFEST"
 
-    if [ -f "$backup_file" ]; then
-        mkdir -p "$(dirname "$target_file")"
-        cp "$backup_file" "$target_file"
-        echo "Restored: $rel_path"
-    else
-        echo "Warning: Backup file $backup_file does not exist, skipping"
-    fi
-done
-
-echo "Restore completed."
-# Optional: delete backup directory (uncomment next line to auto-clean)
-# rm -rf "$BACKUP_DIR"
+echo "Original TWRP source files restored."

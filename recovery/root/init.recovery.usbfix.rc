@@ -1,0 +1,28 @@
+on boot
+    start recovery_usbfix
+
+on property:sys.usb.config=adb
+    start recovery_usbfix
+
+# fastbootd switches directly from ADB, so clear the existing FunctionFS link.
+on property:sys.usb.config=fastboot && property:sys.usb.configfs=1
+    stop recovery_usbfix
+    exec_start fastbootd_prepare
+    write /config/usb_gadget/g1/UDC none
+    rm /config/usb_gadget/g1/configs/b.1/f1
+
+service recovery_usbfix /system/bin/sh /usbfix.sh
+    class main
+    user root
+    group root system shell
+    seclabel u:r:init:s0
+    disabled
+    oneshot
+
+service fastbootd_prepare /system/bin/sh /fastbootd-unmap.sh
+    class core
+    user root
+    group root
+    seclabel u:r:init:s0
+    disabled
+    oneshot

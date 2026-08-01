@@ -1,51 +1,40 @@
 #
-# Copyright (C) 2024 The TWRP Open Source Project
+# Copyright (C) 2026 The Android Open Source Project
+# Copyright (C) 2026 SebaUbuntu's TWRP device tree generator
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+# SPDX-License-Identifier: Apache-2.0
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 
 LOCAL_PATH := device/nubia/P780F01
 
 PRODUCT_USE_DYNAMIC_PARTITIONS := true
+PRODUCT_VIRTUAL_AB_OTA := true
+PRODUCT_SHIPPING_API_LEVEL := 35
 
-# A/B
-TARGET_IS_VAB := true
-ENABLE_VIRTUAL_AB := true
+# Retain the factory payload required before dynamic partitions are mounted.
+SPRD_VENDOR_RAMDISK_FILES := \
+    $(call find-copy-subdir-files,*,$(LOCAL_PATH)/recovery/root,vendor_ramdisk)
 
-# f2fs utilities
+PRODUCT_COPY_FILES += $(SPRD_VENDOR_RAMDISK_FILES)
+SPRD_VENDOR_RAMDISK_FILES :=
+
 PRODUCT_PACKAGES += \
-    sg_write_buffer \
+    check_f2fs \
+    dmctl \
+    dump.erofs \
     f2fs_io \
-    check_f2fs
-
-# Userdata checkpoint
-PRODUCT_PACKAGES += \
-    checkpoint_gc
-
-
-PRODUCT_PACKAGES += \
-    libgptutils \
-    libz \
-    libcutils
-
-PRODUCT_PACKAGES_DEBUG += \
-    bootctl
-
-# Fastbootd
-PRODUCT_PACKAGES += \
+    fsck.erofs \
+    sg_write_buffer \
+    checkpoint_gc \
+    snapuserd \
+    bootctl \
+    android.hardware.fastboot@1.0-impl-mock \
+    android.hardware.fastboot@1.0-impl-mock.recovery \
     fastbootd
+
+PRODUCT_HOST_PACKAGES += \
+    mkfs.erofs
 
 # OTA Certs
 PRODUCT_EXTRA_RECOVERY_KEYS += \
     $(LOCAL_PATH)/security/releasekey
-

@@ -1,0 +1,124 @@
+# The generated TWRP policy keeps recovery services permissive. Disable global
+# enforcement too, so vendor helpers started by init can access their hardware.
+on init
+    exec u:r:init:s0 root root -- /system/bin/setenforce 0
+
+on late-init
+    # /tmp is mounted after early-init.  Create Keystore2's working directory
+    # only after that mount, otherwise the tmpfs mount removes it again.
+    mkdir /tmp/misc 0770 root keystore
+    mkdir /tmp/misc/keystore 0770 root keystore
+
+# The FBE helpers are bundled in the recovery ramdisk. Bring the Trusty
+# backend up before TWRP asks KeyMint to unwrap the metadata-encryption key.
+on early-init
+    # Android 15's servicemanager is linked against the bootstrap linker,
+    # while the recovery ramdisk packages the regular linker at this path.
+    mkdir /system/bin/bootstrap 0755 root root
+    symlink /system/bin/linker64 /system/bin/bootstrap/linker64
+    mkdir /tmp/sprd_ss 0770 root system
+    mkdir /tmp/sprd_tee_ss 0770 root system
+    restorecon /dev/trusty-ipc-dev0
+    chown root system /dev/trusty-ipc-dev0
+    chmod 0666 /dev/trusty-ipc-dev0
+    # sprdstorageproxyd drops to system:system before opening the RPMB node.
+    # The stock uevent rule leaves it root-only in recovery, so expose it to
+    # the service group before the Trusty storage proxies are started.
+    chown root system /dev/rpmb0
+    chmod 0660 /dev/rpmb0
+
+on late-init
+    start twrp.tee-rpc
+    start twrp.trusty-sprd
+    start twrp.rpmbproxy
+    start twrp.nsproxy
+    start twrp.teensproxy
+
+on boot
+    wait /sys/class/leds/haptic_vibrator/state
+    start vendor.sprd.hardware.vibrator-service
+
+# TWRP creates logical-partition mappings while it parses the fstab. Start the
+# property helper only after those mappings exist, so it can read the active
+# system image before KeyMint receives its OS-version configuration.
+on property:twrp.super.symlinks_created=true
+    start twrp.prepdecrypt
+
+service twrp.rpmbserver /vendor/bin/rpmbserver -r /dev/rpmb0
+    class core
+    socket rpmbserver stream 0666 system system
+    user root
+    group root system
+    capabilities DAC_OVERRIDE DAC_READ_SEARCH SYS_RAWIO SETUID SETGID
+    seclabel u:r:recovery:s0
+    setenv LD_LIBRARY_PATH /vendor/lib64:/system/lib64:/vendor/lib64/hw
+    disabled
+
+service twrp.trusty-sprd /vendor/bin/hw/vendor.sprd.hardware.trusty-service
+    class hal
+    user root
+    group root system
+    seclabel u:r:recovery:s0
+    setenv LD_LIBRARY_PATH /vendor/lib64:/system/lib64:/vendor/lib64/hw
+    interface aidl vendor.sprd.hardware.trusty.ITrustyClientProvider/default
+    disabled
+
+service twrp.tee-rpc /vendor/bin/tee_rpc
+    class core
+    user root
+    group root system
+    capabilities DAC_OVERRIDE DAC_READ_SEARCH SYS_RAWIO SETUID SETGID
+    seclabel u:r:recovery:s0
+    setenv LD_LIBRARY_PATH /vendor/lib64:/system/lib64:/vendor/lib64/hw
+    disabled
+
+service twrp.prepdecrypt /system/bin/sh /prepdecrypt.sh
+    class core
+    user root
+    group root
+    seclabel u:r:recovery:s0
+    disabled
+    oneshot
+
+service twrp.keymint-unisoc-3.0 /vendor/bin/hw/android.hardware.security.keymintV3.0-unisoc.service.trusty
+    class early_hal
+    user root
+    group root system drmrpc
+    seclabel u:r:recovery:s0
+    setenv LD_LIBRARY_PATH /vendor/lib64:/system/lib64:/vendor/lib64/hw
+    interface aidl android.hardware.security.keymint.IKeyMintDevice/default
+    interface aidl android.hardware.security.secureclock.ISecureClock/default
+    interface aidl android.hardware.security.sharedsecret.ISharedSecret/default
+    interface aidl android.hardware.security.keymint.IRemotelyProvisionedComponent/default
+    disabled
+
+service twrp.rpmbproxy /vendor/bin/sprdstorageproxyd -f rpmb -d /dev/trusty-ipc-dev0 -p /tmp/sprd_ss
+    class core
+    user root
+    group root system
+    capabilities DAC_OVERRIDE DAC_READ_SEARCH SYS_RAWIO SETUID SETGID
+    seclabel u:r:recovery:s0
+    setenv LD_LIBRARY_PATH /vendor/lib64/sprd:/vendor/lib64:/system/lib64:/vendor/lib64/hw
+    disabled
+    oneshot
+
+service twrp.nsproxy /vendor/bin/sprdstorageproxyd -f ns -d /dev/trusty-ipc-dev0 -p /tmp/sprd_ss
+    class core
+    user root
+    group root system
+    capabilities DAC_OVERRIDE DAC_READ_SEARCH SYS_RAWIO SETUID SETGID
+    seclabel u:r:recovery:s0
+    setenv LD_LIBRARY_PATH /vendor/lib64/sprd:/vendor/lib64:/system/lib64:/vendor/lib64/hw
+    disabled
+
+service twrp.teensproxy /vendor/bin/sprdstorageproxyd -f teens -d /dev/trusty-ipc-dev0 -p /tmp/sprd_tee_ss
+    class core
+    user root
+    group root system
+    capabilities DAC_OVERRIDE DAC_READ_SEARCH SYS_RAWIO SETUID SETGID
+    seclabel u:r:recovery:s0
+    setenv LD_LIBRARY_PATH /vendor/lib64/sprd:/vendor/lib64:/system/lib64:/vendor/lib64/hw
+    disabled
+
+on property:twrp.crypto.storage.ready=1 && property:twrp.prepdecrypt.ready=1
+    start twrp.keymint-unisoc-3.0

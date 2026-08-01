@@ -1,9 +1,0 @@
-# Fastbootd mode fstab - only logical partitions, no first_stage_mount
-system          /system          erofs    ro,barrier=1          wait,logical,slotselect
-system          /system          ext4     ro,barrier=1          wait,logical,slotselect
-system_ext      /system_ext      erofs    ro                     wait,logical,slotselect
-vendor          /vendor          erofs    ro                     wait,logical,slotselect
-odm             /odm             erofs    ro                     wait,logical,slotselect
-product         /product         erofs    ro                     wait,logical,slotselect
-vendor_dlkm     /vendor_dlkm     erofs    ro                     wait,logical,slotselect
-system_dlkm     /system_dlkm     erofs    ro                     wait,logical,slotselect

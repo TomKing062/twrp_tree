@@ -1,2 +1,8 @@
-sys.usb.controller=musb-hdrc.0.auto
-
+# USB/ADB defaults for the generated Unisoc TWRP vendor ramdisk.
+ro.sys.usb.bicr=no
+ro.sys.usb.storage.type=adb,mtp
+persist.service.adb.enable=1
+persist.service.debuggable=1
+persist.sys.usb.config=adb
+persist.sys.support.typeC=true
+persist.sys.usb.menu=miFavor

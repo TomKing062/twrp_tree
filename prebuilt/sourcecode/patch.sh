@@ -1,67 +1,128 @@
-#!/bin/bash
-# patch.sh - Overwrite files from patch/ directory to source root, and backup original files to patch/backup/
+#!/bin/sh
+# Apply the Hyper7s TWRP 14 source overlay without losing the caller's base files.
+set -eu
 
-set -e
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+DEFAULT_SOURCE_ROOT=$(CDPATH= cd -- "$SCRIPT_DIR/../../../../.." && pwd)
+SOURCE_ROOT=${TWRP_SOURCE:-$DEFAULT_SOURCE_ROOT}
+PATCH_ROOT="$SCRIPT_DIR/files"
+BACKUP_ROOT="$SCRIPT_DIR/original"
+MANIFEST="$SCRIPT_DIR/source-files.txt"
+MODE=apply
+FORCE=0
 
-# Get absolute path of the script directory (i.e., prebuilt/sourcecode)
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+usage() {
+    cat <<'EOF'
+Usage: ./patch.sh [--check] [--force]
 
-# Patch source directory (the patch subdirectory)
-PATCH_SRC="$SCRIPT_DIR/patch"
+Environment:
+  TWRP_SOURCE=/path/to/twrp-14  Override the detected TWRP source root.
 
-# Source root directory (up 5 levels: sourcecode -> twrp_12 root)
-SOURCE_ROOT="$(cd "$SCRIPT_DIR/../../../../.." && pwd)"
+Options:
+  --check  Show whether every source file is patched, original, or locally changed.
+  --force  Replace locally changed files after their original backup exists.
+EOF
+}
 
-# Backup directory (under patch/backup)
-BACKUP_DIR="$PATCH_SRC/backup"
-
-echo "=========================================="
-echo "Patch source dir: $PATCH_SRC"
-echo "Source root dir: $SOURCE_ROOT"
-echo "Backup dir: $BACKUP_DIR"
-echo "=========================================="
-
-# Check if patch source directory exists
-if [ ! -d "$PATCH_SRC" ]; then
-    echo "Error: Patch source directory $PATCH_SRC does not exist!"
-    exit 1
-fi
-
-# Create backup directory
-mkdir -p "$BACKUP_DIR"
-
-# Traverse all files under patch/ (excluding backup directory itself)
-cd "$PATCH_SRC"
-find . -type f -not -path "./backup/*" | while read -r file; do
-    # Remove leading "./"
-    rel_path="${file#./}"
-    target_file="$SOURCE_ROOT/$rel_path"
-    backup_file="$BACKUP_DIR/$rel_path"
-
-    # If the file exists in source, backup
-    if [ -f "$target_file" ]; then
-        mkdir -p "$(dirname "$backup_file")"
-        cp "$target_file" "$backup_file"
-        echo "Backed up: $rel_path"
-    else
-        echo "Warning: $rel_path not found in source, will overwrite without backup"
-    fi
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+        --check) MODE=check ;;
+        --force) FORCE=1 ;;
+        -h|--help) usage; exit 0 ;;
+        *) echo "Unknown option: $1" >&2; usage >&2; exit 2 ;;
+    esac
+    shift
 done
 
-# Copy patch files to source root (overwrite)
-echo "Applying patches..."
-if command -v rsync &> /dev/null; then
-    rsync -av --exclude='backup' "$PATCH_SRC"/ "$SOURCE_ROOT"/
-else
-    cd "$PATCH_SRC"
-    find . -type f -not -path "./backup/*" | while read -r file; do
-        rel_path="${file#./}"
-        target_file="$SOURCE_ROOT/$rel_path"
-        mkdir -p "$(dirname "$target_file")"
-        cp "$file" "$target_file"
-        echo "Overwrote: $rel_path"
-    done
+[ -d "$SOURCE_ROOT" ] || {
+    echo "TWRP source root does not exist: $SOURCE_ROOT" >&2
+    exit 1
+}
+[ -f "$MANIFEST" ] || {
+    echo "Missing source manifest: $MANIFEST" >&2
+    exit 1
+}
+
+check_files() {
+    status=0
+    while IFS= read -r rel || [ -n "$rel" ]; do
+        case "$rel" in
+            ''|'#'*) continue ;;
+        esac
+        target="$SOURCE_ROOT/$rel"
+        patched="$PATCH_ROOT/$rel"
+        backup="$BACKUP_ROOT/$rel"
+        if [ ! -f "$target" ]; then
+            printf 'missing  %s\n' "$rel"
+            status=1
+        elif [ ! -f "$patched" ]; then
+            printf 'package-missing  %s\n' "$rel"
+            status=1
+        elif cmp -s "$target" "$patched"; then
+            printf 'patched  %s\n' "$rel"
+        elif [ -f "$backup" ] && cmp -s "$target" "$backup"; then
+            printf 'original  %s\n' "$rel"
+            status=1
+        else
+            printf 'locally-changed  %s\n' "$rel"
+            status=1
+        fi
+    done < "$MANIFEST"
+    return "$status"
+}
+
+if [ "$MODE" = check ]; then
+    check_files
+    exit $?
 fi
 
-echo "Patch applied successfully."
-echo "Original files backed up to $BACKUP_DIR"
+# Validate all inputs before writing the first backup or source file.
+while IFS= read -r rel || [ -n "$rel" ]; do
+    case "$rel" in
+        ''|'#'*) continue ;;
+    esac
+    [ -f "$SOURCE_ROOT/$rel" ] || {
+        echo "Missing source file: $SOURCE_ROOT/$rel" >&2
+        exit 1
+    }
+    [ -f "$PATCH_ROOT/$rel" ] || {
+        echo "Missing packaged file: $PATCH_ROOT/$rel" >&2
+        exit 1
+    }
+done < "$MANIFEST"
+
+while IFS= read -r rel || [ -n "$rel" ]; do
+    case "$rel" in
+        ''|'#'*) continue ;;
+    esac
+    target="$SOURCE_ROOT/$rel"
+    patched="$PATCH_ROOT/$rel"
+    backup="$BACKUP_ROOT/$rel"
+
+    if [ ! -f "$backup" ]; then
+        if cmp -s "$target" "$patched"; then
+            echo "Refusing to create a backup from an already patched file: $rel" >&2
+            echo "Restore a pristine source checkout first, or provide the original file in $backup." >&2
+            exit 1
+        fi
+        mkdir -p "$(dirname -- "$backup")"
+        cp -p "$target" "$backup"
+        printf 'backed up  %s\n' "$rel"
+    fi
+
+    if cmp -s "$target" "$patched"; then
+        printf 'unchanged  %s\n' "$rel"
+        continue
+    fi
+
+    if ! cmp -s "$target" "$backup" && [ "$FORCE" -ne 1 ]; then
+        echo "Refusing to overwrite a locally changed file: $rel" >&2
+        echo "Review it first, or rerun with --force." >&2
+        exit 1
+    fi
+
+    cp -p "$patched" "$target"
+    printf 'patched  %s\n' "$rel"
+done < "$MANIFEST"
+
+echo "Hyper7s source overlay applied. Run ./recovery.sh to restore the saved originals."

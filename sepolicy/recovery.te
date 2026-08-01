@@ -1,0 +1,91 @@
+recovery_only(`
+  get_prop(recovery, property_type)
+
+  allow recovery property_type:file { getattr map open read write };
+  allow recovery {
+    ctl_interface_start_prop
+    default_prop
+    exported_system_prop
+    hwservicemanager_prop
+  }:property_service set;
+
+  allow recovery self:binder { call set_context_mgr transfer };
+  allow recovery self:capability2 wake_alarm;
+  allow recovery self:netlink_kobject_uevent_socket { bind create getopt read setopt };
+  allow recovery self:netlink_selinux_socket { bind create };
+  allow recovery self:process execmem;
+
+  allow recovery kernel:security compute_av;
+  allow recovery selinuxfs:dir { open read };
+  allow recovery selinuxfs:file write;
+
+  allow recovery { service_manager_service service_manager_vndservice }:service_manager add;
+
+  allow recovery vndbinder_device:chr_file { ioctl map open read write };
+
+  allow recovery dev_type:blk_file ioctl;
+  allow recovery block_device:dir { add_name remove_name };
+  allow recovery block_device:lnk_file { create unlink };
+  allow recovery dm_device:blk_file ioctl;
+  allow recovery loop_control_device:chr_file { ioctl open read write };
+  allow recovery loop_device:blk_file ioctl;
+
+  allow recovery device:chr_file { ioctl map open read write };
+  allow recovery ashmem_libcutils_device:chr_file execute;
+  allow recovery configfs:dir search;
+  allow recovery sysfs:dir add_name;
+  allow recovery sysfs:file { create getattr open read write };
+
+  allow recovery apex_mnt_dir:dir { add_name create mounton write };
+  allow recovery linkerconfig_file:dir getattr;
+  allow recovery system_data_root_file:dir mounton;
+  allow recovery rootfs:dir { add_name create remove_name write };
+  allow recovery rootfs:file { create setattr write };
+  allow recovery rootfs:fifo_file { create open read };
+  allow recovery rootfs:lnk_file { create unlink };
+
+  allow init kernel:security { setcheckreqprot setenforce };
+  allow init rootfs:file execute_no_trans;
+  allow init init_tmpfs:file append;
+  allow init functionfs:file getattr;
+  allow init sysfs:dir add_name;
+  allow init sysfs:file { create open write };
+  allow init sysfs_android_usb:dir add_name;
+  allow init sysfs_android_usb:file create;
+
+  allow vendor_init rootfs:dir read;
+  allow ueventd self:capability sys_nice;
+
+  allow logd rootfs:dir read;
+  allow logd rootfs:file { entrypoint execute getattr map open read };
+  allow logd socket_device:dir { add_name write };
+  allow logd socket_device:sock_file create;
+
+  allow adbd self:process setcurrent;
+  allow adbd su:process dyntransition;
+
+  allow su {
+    adbd_config_prop
+    device_logging_prop
+    system_adbd_prop
+    test_harness_prop
+  }:file { getattr map open read };
+  allow su ffs_control_prop:property_service set;
+  allow su property_socket:sock_file write;
+  allow su logdr_socket:sock_file write;
+  allow su rootfs:dir read;
+  allow su rootfs:file { execute execute_no_trans getattr map open read };
+  allow su vendor_file:file execute_no_trans;
+  allow su functionfs:dir search;
+  allow su functionfs:file { open read write };
+  allow su devpts:chr_file { getattr ioctl open read write };
+  allow su kmsg_device:chr_file { open read };
+  allow su kernel:system syslog_read;
+  allow su init:unix_stream_socket connectto;
+  allow su logd:unix_stream_socket connectto;
+  allow su adbd:fd use;
+  allow su adbd:unix_stream_socket { getattr listen read write };
+  allow su self:capability { dac_override dac_read_search };
+
+  allow kernel recovery:fd use;
+')

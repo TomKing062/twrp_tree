@@ -1,0 +1,40 @@
+# <mount_point>      <fstype>  <device>                          <flags>
+
+# Dynamic logical partitions
+/system                  erofs    system              flags=display="System";slotselect;logical
+/system                  ext4     system              flags=display="System";slotselect;logical
+/system_ext              erofs    system_ext          flags=display="System_ext";slotselect;logical
+/vendor                  erofs    vendor              flags=display="Vendor";slotselect;logical
+/odm                     erofs    odm                 flags=display="Odm";slotselect;logical
+/product                 erofs    product             flags=display="Product";slotselect;logical
+/system_dlkm             erofs    system_dlkm         flags=display="System_dlkm";slotselect;logical
+/vendor_dlkm             erofs    vendor_dlkm         flags=display="Vendor_dlkm";slotselect;logical
+
+# Boot-related partitions
+/boot                    emmc     /dev/block/by-name/boot               flags=display="Boot";slotselect
+/vendor_boot             emmc     /dev/block/by-name/vendor_boot        flags=display="Vendor_boot";slotselect
+/init_boot               emmc     /dev/block/by-name/init_boot          flags=display="Init_boot";slotselect
+
+# AVB partitions
+/vbmeta                  emmc     /dev/block/by-name/vbmeta             flags=display="Vbmeta";slotselect
+
+# Essential misc / persist
+/misc                    emmc     /dev/block/by-name/misc               flags=display="Misc"
+/persist                 ext4     /dev/block/by-name/persist            flags=display="Persist"
+/logo                    emmc     /dev/block/by-name/logo               flags=display="Logo"
+/fbootlogo               emmc     /dev/block/by-name/fbootlogo          flags=display="FbootLogo"
+
+# Metadata / cache
+/metadata                f2fs     /dev/block/by-name/metadata           flags=display="Metadata"
+/cache                   ext4     /dev/block/by-name/cache              flags=display="Cache"
+
+# User data
+/data                    f2fs     /dev/block/by-name/userdata           flags=display="Data"
+
+# Optional calibration / config
+/prodnv                  ext4     /dev/block/by-name/prodnv             flags=display="Prodnv"
+/ztecfg                  emmc     /dev/block/by-name/ztecfg             flags=display="ZteCfg"
+
+# External storage
+/external_sd             auto     /dev/block/mmcblk1p1                  flags=display="External SD";storage;removable
+/usb_otg                 auto     /dev/block/sdd1                       flags=display="USB OTG";storage;removable

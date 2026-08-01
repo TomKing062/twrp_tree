@@ -1,0 +1,17 @@
+# Paths are relative to the TWRP source root.
+bootable/recovery/Android.mk
+bootable/recovery/libtar/Android.mk
+bootable/recovery/libtar/append.c
+bootable/recovery/libtar/block.c
+bootable/recovery/libtar/extract.c
+bootable/recovery/libtar/libtar.h
+bootable/recovery/libtar/output.c
+bootable/recovery/minuitwrp/events.cpp
+bootable/recovery/minuitwrp/libminuitwrp_defaults.go
+bootable/recovery/partition.cpp
+bootable/recovery/partitionmanager.cpp
+bootable/recovery/prebuilt/Android.mk
+bootable/recovery/twrpApex.cpp
+system/vold/KeyStorage.cpp
+vendor/twrp/config/BoardConfigSoong.mk
+cts/tests/tests/os/assets/platform_releases.txt
